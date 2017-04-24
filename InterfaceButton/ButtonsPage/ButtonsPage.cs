@@ -1,5 +1,4 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Support.PageObjects;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,68 +10,9 @@ namespace InterfaceButton
 {
     class ButtonsPage
     {
-        public ButtonsPage()
-        {
-            PageFactory.InitElements(Global.GlobalDefinition.driver, this);
-        }
+        
 
-
-
-        [FindsBy(How = How.Name, Using = "BTN_NAME")]
-        public IWebElement btnNameTextBox { get; set; }
-
-        [FindsBy(How = How.Name, Using = "BTN_DISPLAY_TITLE")]
-        public IWebElement btnDisplayNameTextBox { get; set; }
-
-        [FindsBy(How = How.Name, Using = "PRE_CONDITION")]
-        public IWebElement preCdtnTextBox { get; set; }
-
-        [FindsBy(How = How.Name, Using = "VALUE_UPDATES")]
-        public IWebElement valueUpdateTextBox { get; set; }
-
-        [FindsBy(How = How.XPath, Using = "//*[@id='grid']/div[1]/a")]
-        public IWebElement addNewRecordBtn { get; set; }
-
-        [FindsBy(How = How.XPath, Using = "/html/body/div[6]/div[2]/div/div[27]/a[1]")]
-        public IWebElement createBtn { get; set; }
-
-        [FindsBy(How = How.XPath, Using = "//*[@id='grid']/div[3]/div/table/thead/tr/th[1]/a[1]/span")]
-        public IWebElement filterIcon { get; set; }
-
-        [FindsBy(How = How.XPath, Using = "/html/body/div[5]/form/div[1]/input[1]")]
-        public IWebElement filterTextBox { get; set; }
-
-        [FindsBy(How = How.XPath, Using = "/html/body/div[5]/form/div[1]/div[2]/button[1]")]
-        public IWebElement filterBtn { get; set; }
-
-        [FindsBy(How = How.XPath, Using = "//*[@id='grid']/div[4]/table/tbody/tr[1]/td[14]/a[1]")]
-        public IWebElement editBtnAfterFilter { get; set; }
-
-        [FindsBy(How = How.CssSelector, Using = "body > div.k-widget.k-window > div.k-popup-edit-form.k-window-content.k-content > div > div.k-edit-buttons.k-state-default > a.k-button.k-button-icontext.k-grid-update")]
-        public IWebElement updateBtnClick { get; set; }
-
-        [FindsBy(How = How.XPath, Using = "//*[@id='grid']/div[4]/table/tbody/tr[1]/td[1]")]
-        public IWebElement firstRecordAfterFilterValue01 { get; set; }
-
-        [FindsBy(How = How.XPath, Using = "//*[@id='grid']/div[4]/table/tbody/tr[1]/td[2]")]
-        public IWebElement firstRecordAfterFilterValue02 { get; set; }
-
-        [FindsBy(How = How.XPath, Using = "//*[@id='grid']/div[4]/table/tbody/tr[1]/td[4]")]
-        public IWebElement firstRecordAfterFilterValue03 { get; set; }
-
-        [FindsBy(How = How.XPath, Using = "//*[@id='grid']/div[4]/table/tbody/tr[1]/td[6]")]
-        public IWebElement firstRecordAfterFilterValue04 { get; set; }
-
-        [FindsBy(How = How.XPath, Using = "//*[@id='grid']/div[4]/table/tbody/tr[1]/td[14]/a[2]")]
-        public IWebElement deleteBtnAfterFilter { get; set; }
-
-        [FindsBy(How = How.XPath, Using = "//*[@id='container']/div/form/div/input")]
-        public IWebElement deleteConfirmBtn { get; set; }
-
-        [FindsBy(How = How.CssSelector, Using = "#grid > div.k-pager-wrap.k-grid-pager.k-widget > span.k-pager-info.k-label")]
-        public IWebElement rightPagenation { get; set; }
-
-        public void AddNewRecord ()
+        public void AddNewRecord (IWebDriver driver)
         {
 
             List<string> addNewRecord = new List<string>();
@@ -82,176 +22,76 @@ namespace InterfaceButton
             addNewRecord.Add("CheckValueUpdate");
 
             //#######Add New Record Test Here########
-            addNewRecordBtn.ClickAndWait();
+            driver.FindElement(By.XPath("//*[@id='grid']/div[1]/a")).ClickAndWait();
 
             //TextBox input
-            btnNameTextBox.EnterValue(addNewRecord[0]);
-            btnDisplayNameTextBox.EnterValue(addNewRecord[1]);
-            preCdtnTextBox.EnterValue(addNewRecord[2]);
-            valueUpdateTextBox.EnterValue(addNewRecord[3]);
+            driver.FindElement(By.Name("BTN_NAME")).EnterValue(addNewRecord[0]);
+            driver.FindElement(By.Name("BTN_DISPLAY_TITLE")).EnterValue(addNewRecord[1]);
+            driver.FindElement(By.Name("PRE_CONDITION")).EnterValue(addNewRecord[2]);
+            driver.FindElement(By.Name("VALUE_UPDATES")).EnterValue(addNewRecord[3]);
 
             //Use DropdownSelect to Repeat Dropdown Selection
-            DropdownSelect(Global.GlobalDefinition.driver);
-
+            DropdownSelect(driver);
+            
             for (int i = 1; i < 2; i++)
             {
                 try
                 {
-                    createBtn.Click();
-                    Global.GlobalDefinition.driver.SwitchTo().Alert().Dismiss();
+                    driver.FindElement(By.XPath("/html/body/div[6]/div[2]/div/div[27]/a[1]")).Click();
+                    driver.SwitchTo().Alert().Dismiss();
                 }
                 catch (Exception) { Console.WriteLine("Exception caught!"); }
             }
 
-            Global.GlobalDefinition.driver.Navigate().Refresh();
+            driver.Navigate().Refresh();
 
             //Use VerifyResult to Verify Record Change
-
-            filterIcon.ClickAndWait();
-            filterTextBox.SendKeys(addNewRecord[0]);
-            filterBtn.ClickAndWait();
-
-
-            VerifyResult(Global.GlobalDefinition.driver, addNewRecord, "Add New Record", "AddUpdate");
+            VerifyResult(driver, addNewRecord, "Add New Record", "AddUpdate");
 
 
         }
 
-        public void EditExistingRecord()
+        public void EditExistingRecord(IWebDriver driver)
         {
             List<string> updateRecord = new List<string>();
             updateRecord.Add("update");
             updateRecord.Add("update2");
-            updateRecord.Add("update3");
             updateRecord.Add("update4");
-
-            //NOT FINISHED
-
-
-            filterIcon.ClickAndWait();
-            filterTextBox.SendKeys("CheckButtonName");
-            filterBtn.ClickAndWait();
-
-            editBtnAfterFilter.ClickAndWait();
-
-            btnNameTextBox.EnterValue(updateRecord[0]);
-            btnDisplayNameTextBox.EnterValue(updateRecord[1]);
-            preCdtnTextBox.EnterValue(updateRecord[2]);
-            valueUpdateTextBox.EnterValue(updateRecord[3]);
-
-            DropdownSelect(Global.GlobalDefinition.driver);
-
-
-            updateBtnClick.Click();
-
-            try
-            {
-                updateBtnClick.Click();
-
-                Global.GlobalDefinition.driver.SwitchTo().Alert().Dismiss();
-            }
-            catch (Exception) { Console.WriteLine("Exception caught!"); }
-
-
-      
-
-            Global.GlobalDefinition.driver.Navigate().Refresh();
-
-            //Use VerifyResult to Verify Record Change
-
-            filterIcon.ClickAndWait();
-            filterTextBox.SendKeys(updateRecord[0]);
-            filterBtn.ClickAndWait();
-
-            VerifyResult(Global.GlobalDefinition.driver, updateRecord,"Add New Record", "AddUpdate");
-
-
-
+            updateRecord.Add("update5");
         }
 
-        public void DeleteRecord()
+        public void DeleteRecord(IWebDriver driver)
         {
 
 
             //######## Delete Function Test Here#########
-            //Filter(driver, "a");
-            //filterIcon.ClickAndWait();
-           // filterTextBox.SendKeys("update");
-           // filterBtn.ClickAndWait();
-
-
-            //Option2, Search for Specific Page
-            string keyName = "Yarun";
-
-            int numPage = Global.GlobalDefinition.driver.FindElements(By.XPath("//*[@id='grid']/div[5]/ul/li")).Count();
-            Console.WriteLine("Number of Pages: {0}", numPage);
-           
-            for (int pageIndex = 1; pageIndex <numPage+1; pageIndex++)
-            {
-                Console.WriteLine("");
-                Console.WriteLine("Page " + pageIndex);
-                int numElement = Global.GlobalDefinition.driver.FindElements(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr/td[1]")).Count();
-                Console.WriteLine("Numbers of items : {0}", numElement);
-
-                for (int i = 1; i <= numElement; i++)
-                {
-                    
-                    string firstText = Global.GlobalDefinition.driver.FindElement(By.CssSelector("#grid > div.k-grid-content > table > tbody > tr:nth-child(" + i + ") > td:nth-child(1)")).Text;
-                    Console.WriteLine("Line "+ i + ": " + firstText);
-                    if (firstText.Equals(keyName))
-                    {
-                        Console.WriteLine("Congratulations, the item is at Page {0}, Line {1}", pageIndex,i);
-                        Global.GlobalDefinition.driver.FindElement(By.CssSelector("#grid > div.k-grid-content > table > tbody > tr:nth-child(" + i + ") > td:nth-child(14) > a.k-button.k-button-icontext.k-grid-edit")).ClickAndWait();
-                        break;
-                    }
-
-                  
-                }
-
-                try { Global.GlobalDefinition.driver.FindElement(By.XPath("//*[@id='grid']/div[5]/ul/li[" + (pageIndex+1) + "]")).ClickAndWait(); }
-                catch (Exception)   {
-                    Console.WriteLine("Exception Expected Here");}
-                   
-                    
-
-               
-                
-            }
-           
-/*
-
-
+            Filter(driver, "test");
 
             //Save Selected Record into deleteRecord 
             List<string> deleteRecord = new List<string>();
 
-                deleteRecord.Add(firstRecordAfterFilterValue01.Text);
-            deleteRecord.Add(firstRecordAfterFilterValue02.Text);
-            deleteRecord.Add(firstRecordAfterFilterValue03.Text);
-            deleteRecord.Add(firstRecordAfterFilterValue04.Text);
+            deleteRecord.Add(driver.FindElement(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr[1]/td[1]")).Text);
+            deleteRecord.Add(driver.FindElement(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr[1]/td[2]")).Text);
+            deleteRecord.Add(driver.FindElement(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr[1]/td[4]")).Text);
+            deleteRecord.Add(driver.FindElement(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr[1]/td[6]")).Text);
             Console.WriteLine("You are trying to delet button: {0},  {1},  {2} {3}", deleteRecord[0], deleteRecord[1], deleteRecord[2], deleteRecord[3]);
 
-            deleteBtnAfterFilter.ClickAndWait();
+            driver.FindElement(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr[1]/td[14]/a[2]")).ClickAndWait();
             //Delete Action Confirm
-            deleteConfirmBtn.ClickAndWait();
+            driver.FindElement(By.XPath("//*[@id='container']/div/form/div/input")).ClickAndWait();
 
             //Verify Deletion Successful
-            filterIcon.ClickAndWait();
-            filterTextBox.SendKeys(deleteRecord[0]);
-            filterBtn.ClickAndWait();
-
-            VerifyResult(Global.GlobalDefinition.driver, deleteRecord, "Delete Existing Record", "Del");
+            VerifyResult(driver, deleteRecord, "Delete Existing Record", "Del");
 
 
             //#######Closing Browser######
             //Refresh page
-            Global.GlobalDefinition.driver.Navigate().Refresh();
+            driver.Navigate().Refresh();
             //driver.Close();
             //driver.Quit();
-     
-        */
-           }
-        private void DropdownSelect(IWebDriver driver)
+        }
+        //Random DropDown Selection
+        private static void DropdownSelect(IWebDriver driver)
         {
             Random rnd = new Random();
             //define Double Click Functions
@@ -300,26 +140,81 @@ namespace InterfaceButton
             string EntityTypeCSS = "#ETT_DBID_listbox > li:nth-child(" + (rnd.Next(2, optionNumEntityType)) + ")";
             func(driver.FindElement(By.CssSelector(EntityTypeCSS)));
 
-           
+            /*
+                       //Override Theme
+                       driver.FindElement(By.CssSelector("body > div.k-widget.k-window > div.k-popup-edit-form.k-window-content.k-content > div > div:nth-child(20) > span.k-widget.k-dropdown.k-header > span > span.k-input")).Click();
+                       string overRideThemeXpath = "/html/body/div[14]/div/ul/li[" + rnd.Next(1,3) + "]";
+                       func(driver.FindElement(By.XPath(overRideThemeXpath)));
 
+                        //Color Selection
+                        //COLOR 01
+                        List<int> some = new List<int>();
+                        some.Add(rnd.Next(0, 255));
+                        some.Add(rnd.Next(0, 255));
+                        some.Add(rnd.Next(0, 255));
+                        Console.WriteLine(HexCodeConvertor(some));
+                        driver.FindElement(By.CssSelector("body > div.k-widget.k-window > div.k-popup-edit-form.k-window-content.k-content > div > div:nth-child(22) > span > span > span.k-selected-color")).Click();
+                        IWebElement colorValue = driver.FindElement(By.XPath("/html/body/div[13]")).FindElement(By.XPath("/div/div[1]/div/input"));
+                        //IWebElement colorValue = driver.FindElement(By.XPath("//*[@className='k-selected-color']/div[1]/div/input"));
+
+                        colorValue.Clear();
+                        colorValue.EnterValue(HexCodeConvertor(some));
+
+                        driver.FindElement(By.CssSelector("body > div.k-widget.k-window > div.k-popup-edit-form.k-window-content.k-content > div > div:nth-child(25) > label")).Click();
+
+
+
+
+                        //COLOR 02
+                        //driver.FindElement(By.CssSelector("body > div.k-widget.k-window > div.k-popup-edit-form.k-window-content.k-content > div > div:nth-child(24) > span > span > span.k-selected-color")).Click();
+
+                        //COLOR 03
+                        //driver.FindElement(By.CssSelector("body > div.k-widget.k-window > div.k-popup-edit-form.k-window-content.k-content > div > div:nth-child(26) > span > span > span.k-selected-color")).Click();
+
+            */
+
+
+        }
+
+        //Convert RGB Value into HEX Code
+        private static string HexCodeConvertor(List<int> rgb)
+        {
+            string result = "#";
+            foreach (int index in rgb)
+            {
+                string r = Convert.ToString(rgb[0], 16);
+                result = result + r;
+            }
+            return result.ToUpper();
+        }
+
+
+        //Filter 
+        private static void Filter(IWebDriver driver, string filterValue)
+        {
+            driver.FindElement(By.XPath("//*[@id='grid']/div[3]/div/table/thead/tr/th[1]/a[1]/span")).ClickAndWait();
+            IWebElement Newdriver = driver.FindElement(By.XPath("/html/body/div[5]/form/div[1]/input[1]"));
+            Thread.Sleep(1000);
+
+            Newdriver.EnterValue(filterValue);
+
+            driver.FindElement(By.XPath("/html/body/div[5]/form/div[1]/div[2]/button[1]")).ClickAndWait();
         }
 
 
         //Verify Filter Result
-        private void VerifyResult(IWebDriver driver, List<string> newValue, string message, string AddorDel)
+        private static void VerifyResult(IWebDriver driver, List<string> newValue, string message, string AddorDel)
         {
-            
-            string expectMessage = "No items to display";
-            string actualMessagge = rightPagenation.Text;
-
-            Console.WriteLine(actualMessagge);
+            //Filter
+            Filter(driver, newValue[0]);
 
             //Delete and Add/Edit Verification is Different
             switch (AddorDel)
             {
                 case "Del":
 
-                    
+                    string expectMessage = "No items to display";
+                    string actualMessagge = driver.FindElement(By.CssSelector("#grid > div.k-pager-wrap.k-grid-pager.k-widget > span.k-pager-info.k-label")).Text;
                     if (expectMessage.Equals(actualMessagge))
 
                     //Compare Filter Result Pagenotation Message
@@ -330,10 +225,10 @@ namespace InterfaceButton
                     {
                         for (int i = 1; i < 2; i++)
                         {
-                            string resultBtnNm = firstRecordAfterFilterValue01.Text;
-                            string resultBtnTt = firstRecordAfterFilterValue02.Text;
-                            string resultPreCdt = firstRecordAfterFilterValue03.Text;
-                            string resultVaUpdt = firstRecordAfterFilterValue04.Text;
+                            string resultBtnNm = driver.FindElement(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr[1]/td[1]")).Text;
+                            string resultBtnTt = driver.FindElement(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr[1]/td[2]")).Text;
+                            string resultPreCdt = driver.FindElement(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr[1]/td[4]")).Text;
+                            string resultVaUpdt = driver.FindElement(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr[1]/td[6]")).Text;
 
                             if (resultBtnNm.Equals(newValue[0]) && resultBtnTt.Equals(newValue[1]) && resultPreCdt.Equals(newValue[2]) && resultVaUpdt.Equals(newValue[3]))
                             {
@@ -347,42 +242,15 @@ namespace InterfaceButton
 
                 case ("AddUpdate"):
                     //Save Filter Result Value
-                    if (expectMessage.Equals(actualMessagge))
-
-                    //Compare Filter Result Pagenotation Message
-                    { Console.WriteLine(message + " function test Failed! Update is not successful"); }
-
-                    else
-                    {
-                        Console.WriteLine("The update data is:");
-                        Console.WriteLine(newValue[0]);
-                        Console.WriteLine(newValue[1]);
-                        Console.WriteLine(newValue[2]);
-                        Console.WriteLine(newValue[3]);
-
-                        string result1 = firstRecordAfterFilterValue01.Text;
-                        string result2 = firstRecordAfterFilterValue02.Text;
-                        string result3 = firstRecordAfterFilterValue03.Text;
-                        string result4 = firstRecordAfterFilterValue04.Text;
-
-                        Console.WriteLine("The  data is:");
-                        Console.WriteLine(result1);
-                        Console.WriteLine(result2);
-                        Console.WriteLine(result3);
-                        Console.WriteLine(result4);
-
-                        if (result1.Equals(newValue[0]) && result2.Equals(newValue[1]) && result3.Equals(newValue[2]) && result4.Equals(newValue[3]))
-                        { Console.WriteLine(message + " function test passed!"); }
-                        else
-                        {
-                            Console.WriteLine(message + " function test FAILED! There might be more than two buttons with same name");
-                        }
-                    }
-
-                    
+                    string result1 = driver.FindElement(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr/td[1]")).Text;
+                    string result2 = driver.FindElement(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr/td[2]")).Text;
+                    string result3 = driver.FindElement(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr/td[4]")).Text;
+                    string result4 = driver.FindElement(By.XPath("//*[@id='grid']/div[4]/table/tbody/tr/td[6]")).Text;
 
                     //Compare the UpdateValue and Filter Result
-                    
+                    if (result1.Equals(newValue[0]) && result2.Equals(newValue[1]) && result3.Equals(newValue[2]) && result4.Equals(newValue[3]))
+                    { Console.WriteLine(message + " function test passed!"); }
+                    else { Console.WriteLine(message + " function test FAILED!"); }
                     break;
 
                 default: break;
